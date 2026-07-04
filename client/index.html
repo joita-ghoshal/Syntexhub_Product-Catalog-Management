@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Product Catalog — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== TOP NAV ===================== -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <span class="brand-mark">◆</span>
+        <span class="brand-name">Catalog<span class="brand-accent">Hub</span></span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="auth-chip" id="authChip">
+        <span class="auth-dot" id="authDot"></span>
+        <span id="authLabel">Not signed in</span>
+      </div>
+      <button class="btn btn-ghost" id="btnAuth">Sign in</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar">
+      <nav class="side-nav">
+        <a class="side-link active" data-view="products">
+          <span class="side-icon">🗂️</span> Products
+        </a>
+        <a class="side-link" data-view="analytics">
+          <span class="side-icon">📊</span> Analytics
+        </a>
+      </nav>
+
+      <div class="side-card">
+        <p class="side-card-title">Quick tip</p>
+        <p class="side-card-text">Sign in to add, edit, delete products and view analytics. Browsing and search are open to everyone.</p>
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="main">
+
+      <!-- ---------- PRODUCTS VIEW ---------- -->
+      <section id="view-products" class="view active">
+
+        <div class="page-head">
+          <div>
+            <h1>Product Catalog</h1>
+            <p class="subtitle">Search, filter and manage every product in your store.</p>
+          </div>
+          <button class="btn btn-primary" id="btnAddProduct">
+            <span class="btn-icon">＋</span> Add Product
+          </button>
+        </div>
+
+        <!-- Toolbar: search / filter / sort -->
+        <div class="toolbar card">
+          <div class="field search-field">
+            <span class="field-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by name or category…" />
+          </div>
+
+          <div class="field">
+            <select id="filterCategory">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <select id="filterStatus">
+              <option value="">All Status</option>
+              <option value="Available">Available</option>
+              <option value="Out Of Stock">Out Of Stock</option>
+            </select>
+          </div>
+
+          <div class="field price-field">
+            <input type="number" id="minPrice" placeholder="Min ₹" min="0" />
+            <span class="price-sep">–</span>
+            <input type="number" id="maxPrice" placeholder="Max ₹" min="0" />
+          </div>
+
+          <div class="field">
+            <select id="sortSelect">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="name">Name (A–Z)</option>
+              <option value="price">Price (Low–High)</option>
+              <option value="-price">Price (High–Low)</option>
+            </select>
+          </div>
+
+          <button class="btn btn-outline" id="btnResetFilters">Reset</button>
+        </div>
+
+        <!-- Products grid -->
+        <div id="productsGrid" class="products-grid"></div>
+
+        <!-- Empty state -->
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-illustration">📦</div>
+          <h3>No products found</h3>
+          <p>Try adjusting your search or filters, or add a new product to get started.</p>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div id="loadingState" class="loading-grid hidden">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+      </section>
+
+      <!-- ---------- ANALYTICS VIEW ---------- -->
+      <section id="view-analytics" class="view">
+        <div class="page-head">
+          <div>
+            <h1>Analytics</h1>
+            <p class="subtitle">Live aggregation insights across your catalog.</p>
+          </div>
+        </div>
+
+        <div id="analyticsLocked" class="empty-state">
+          <div class="empty-illustration">🔒</div>
+          <h3>Sign in required</h3>
+          <p>Please sign in to view aggregated analytics for your catalog.</p>
+        </div>
+
+        <div id="analyticsContent" class="hidden">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <p class="stat-label">Total Products</p>
+              <p class="stat-value" id="statTotal">0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Out Of Stock</p>
+              <p class="stat-value" id="statOOS">0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Average Price</p>
+              <p class="stat-value" id="statAvg">₹0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Highest Price</p>
+              <p class="stat-value" id="statHigh">₹0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Lowest Price</p>
+              <p class="stat-value" id="statLow">₹0</p>
+            </div>
+          </div>
+
+          <div class="card category-card">
+            <h3>Products Per Category</h3>
+            <div id="categoryBars" class="category-bars"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================== PRODUCT MODAL ===================== -->
+  <div class="modal-overlay hidden" id="productModalOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="productModalTitle">Add Product</h2>
+        <button class="modal-close" id="closeProductModal">✕</button>
+      </div>
+      <form id="productForm" class="modal-body">
+        <input type="hidden" id="productId" />
+        <div class="form-row">
+          <label>Product Name *</label>
+          <input type="text" id="pName" required maxlength="150" />
+        </div>
+        <div class="form-row">
+          <label>Description *</label>
+          <textarea id="pDescription" required maxlength="2000" rows="3"></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Category *</label>
+            <input type="text" id="pCategory" required list="categoryList" />
+            <datalist id="categoryList"></datalist>
+          </div>
+          <div class="form-row">
+            <label>Brand *</label>
+            <input type="text" id="pBrand" required />
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Price (₹) *</label>
+            <input type="number" id="pPrice" required min="0" step="0.01" />
+          </div>
+          <div class="form-row">
+            <label>Stock Quantity *</label>
+            <input type="number" id="pStock" required min="0" step="1" />
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>SKU (optional — auto-generated if empty)</label>
+            <input type="text" id="pSku" placeholder="Auto-generated" />
+          </div>
+          <div class="form-row">
+            <label>Status</label>
+            <select id="pStatus">
+              <option value="Available">Available</option>
+              <option value="Out Of Stock">Out Of Stock</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Product Image URL</label>
+          <input type="url" id="pImageUrl" placeholder="https://…" />
+        </div>
+
+        <div class="form-error hidden" id="formError"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelProductForm">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="submitProductForm">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== AUTH MODAL ===================== -->
+  <div class="modal-overlay hidden" id="authModalOverlay">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2 id="authModalTitle">Sign In</h2>
+        <button class="modal-close" id="closeAuthModal">✕</button>
+      </div>
+      <form id="authForm" class="modal-body">
+        <div class="form-row" id="authNameRow">
+          <label>Name</label>
+          <input type="text" id="authName" />
+        </div>
+        <div class="form-row">
+          <label>Email *</label>
+          <input type="email" id="authEmail" required />
+        </div>
+        <div class="form-row">
+          <label>Password *</label>
+          <input type="password" id="authPassword" required minlength="6" />
+        </div>
+
+        <div class="form-error hidden" id="authError"></div>
+
+        <div class="modal-actions modal-actions-column">
+          <button type="submit" class="btn btn-primary btn-block" id="authSubmitBtn">Sign In</button>
+          <button type="button" class="btn btn-link" id="toggleAuthMode">Need an account? Register</button>
+          <button type="button" class="btn btn-ghost btn-block hidden" id="btnLogout">Log Out</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== DELETE CONFIRM MODAL ===================== -->
+  <div class="modal-overlay hidden" id="deleteModalOverlay">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Delete Product</h2>
+        <button class="modal-close" id="closeDeleteModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">Are you sure you want to delete "<span id="deleteProductName"></span>"? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="cancelDelete">Cancel</button>
+          <button class="btn btn-danger" id="confirmDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST ===================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
