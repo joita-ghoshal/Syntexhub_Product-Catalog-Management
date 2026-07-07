@@ -14,8 +14,8 @@ const router = express.Router();
  *   description: Authentication endpoints
  */
 
-router.post('/register', authLimiter, registerValidator, validateRequest, register);
-router.post('/login', authLimiter, loginValidator, validateRequest, login);
+router.post('/register', registerValidator, validateRequest, register);
+router.post('/login', loginValidator, validateRequest, login);
 router.get('/me', protect, getMe);
 
 module.exports = router;
