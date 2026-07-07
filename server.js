@@ -16,6 +16,10 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
+
+// Vercel-specific configuration to trust the proxy headers for correct client IP detection
+app.set('trust proxy', 1); 
+
 const API_VERSION = process.env.API_VERSION || 'v1';
 
 // ------------------------------------------------------------------
