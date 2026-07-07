@@ -47,7 +47,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Apply general rate limiting to all API routes
-app.use(`/api/${API_VERSION}`, apiLimiter);
+// app.use(`/api/${API_VERSION}`, apiLimiter);
 
 // ------------------------------------------------------------------
 // Static frontend dashboard
