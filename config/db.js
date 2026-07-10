@@ -27,11 +27,7 @@ const connectDB = async () => {
       throw new Error('MONGO_URI is not defined in the environment variables');
     }
 
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(mongoUri, opts).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(mongoUri).then((mongooseInstance) => {
       console.log(`MongoDB Connected: ${mongooseInstance.connection.host}/${mongooseInstance.connection.name}`);
       return mongooseInstance;
     });
