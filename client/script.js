@@ -591,6 +591,7 @@
   });
 
   els.toggleAuthMode.addEventListener('click', () => {
+    els.authError.classList.add('hidden');
     setAuthMode(state.authMode === 'login' ? 'register' : 'login');
   });
 

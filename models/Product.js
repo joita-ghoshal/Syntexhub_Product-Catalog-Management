@@ -86,6 +86,19 @@ productSchema.pre('save', function (next) {
   next();
 });
 
+// Sync status on findOneAndUpdate as well (save hook doesn't fire here)
+productSchema.pre('findOneAndUpdate', function (next) {
+  const update = this.getUpdate();
+  if (update && update.stockQuantity !== undefined) {
+    if (update.stockQuantity <= 0) {
+      update.status = 'Out Of Stock';
+    } else if (update.stockQuantity > 0) {
+      update.status = 'Available';
+    }
+  }
+  next();
+});
+
 productSchema.index({ name: 'text', category: 'text', brand: 'text' });
 
 module.exports = mongoose.model('Product', productSchema);

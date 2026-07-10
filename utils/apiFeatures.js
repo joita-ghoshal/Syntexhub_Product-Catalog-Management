@@ -16,12 +16,18 @@ class ApiFeatures {
     this.queryString = queryString;
   }
 
-  // Case-insensitive search by product name or category
+  // Escape special regex characters to prevent injection
+  static escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // Case-insensitive search by product name, category or brand
   search() {
     if (this.queryString.search) {
-      const searchRegex = new RegExp(this.queryString.search, 'i');
+      const safeSearch = ApiFeatures.escapeRegex(this.queryString.search);
+      const searchRegex = new RegExp(safeSearch, 'i');
       this.query = this.query.find({
-        $or: [{ name: searchRegex }, { category: searchRegex }],
+        $or: [{ name: searchRegex }, { category: searchRegex }, { brand: searchRegex }],
       });
     }
     return this;
@@ -36,7 +42,7 @@ class ApiFeatures {
     const mongoFilter = {};
 
     if (queryObj.category) {
-      mongoFilter.category = new RegExp(`^${queryObj.category}$`, 'i');
+      mongoFilter.category = new RegExp(`^${ApiFeatures.escapeRegex(queryObj.category)}$`, 'i');
     }
 
     if (queryObj.status) {
@@ -50,7 +56,7 @@ class ApiFeatures {
     }
 
     if (queryObj.brand) {
-      mongoFilter.brand = new RegExp(`^${queryObj.brand}$`, 'i');
+      mongoFilter.brand = new RegExp(`^${ApiFeatures.escapeRegex(queryObj.brand)}$`, 'i');
     }
 
     // Only fetch products that have not been soft-deleted

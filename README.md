@@ -15,7 +15,7 @@ A lightweight, dependency-free frontend dashboard (HTML/CSS/Vanilla JS) is inclu
 ## 2. Features
 
 - ✅ Full CRUD for products (Create, Read, Read All, Update, Delete)
-- ✅ Case-insensitive search by product name or category
+- ✅ Case-insensitive search by product name, category or brand
 - ✅ Filtering by category, availability status, and price range
 - ✅ Sorting by name, price, newest, oldest
 - ✅ Pagination (`page`, `limit`) with metadata (`total`, `totalPages`, `hasNextPage`, `hasPrevPage`)
@@ -192,7 +192,7 @@ Base URL: `/api/v1`
 |-------------|-------------------------------------------------|-----------------------|
 | `page`      | Page number                                    | `1`                   |
 | `limit`     | Items per page (max 100)                       | `10`                   |
-| `search`    | Case-insensitive search by name or category    | `mouse`                |
+| `search`    | Case-insensitive search by name, category or brand | `mouse`                |
 | `category`  | Filter by exact category (case-insensitive)    | `Electronics`          |
 | `status`    | `Available` or `Out Of Stock`                  | `Available`            |
 | `minPrice`  | Minimum price                                  | `100`                  |
